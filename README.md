@@ -9,7 +9,7 @@ Included are tools that I wrote to assist me with live concert library managemen
 1. Write the metadata to the FLAC files.
 1. Clean up SHN and metadata files after processing is complete.
 
-These tools only require Python and a Bash shell. No additional libraries are needed.
+These tools only require Python, ffmpeg, and a Bash shell. No additional libraries are needed.
 
 ## Example Usage
 
@@ -41,4 +41,17 @@ Clean up SHN and metadata (**Warning this is distructive and will delete your SH
 
 ## Requirements
 
-You must have `ffmpeg` installed, which also includes `metaflac`.
+You must have [`ffmpeg`](https://www.ffmpeg.org/) installed, which also includes `metaflac`.
+
+### Mac OS Homebrew
+
+```
+brew install ffmpeg
+```
+
+### Ubuntu
+
+```
+sudo apt update
+sudo apt install ffmpeg
+```
