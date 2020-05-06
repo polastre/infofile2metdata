@@ -52,7 +52,7 @@ clean () {
   for f in **/*.flac; do
     if [ -f ${f/%.flac/.vorbis} ]; then
       if [ $verbose == 1 ]; then
-        echo "delete $f"
+        echo "delete ${f/%.flac/.vorbis}"
       fi
       rm -f ${f/%.flac/.vorbis} ;
     fi
