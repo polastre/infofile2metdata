@@ -162,6 +162,7 @@ def matchTracksToFiles(info, files):
 def toVorbis(metadata, track):
     """ convert the track and album metadata into tag vorbis for metaflac """
     date_string = metadata['date'].strftime("%Y-%m-%d")
+    year_string = metadata['date'].strftime("%Y")
     return f"""ARTIST={metadata['artist']}
 ARTISTSORT={metadata['artist']}
 ALBUMARTIST={metadata['artist']}
@@ -170,6 +171,7 @@ ALBUM={date_string}: {metadata['venue']}, {metadata['location']}
 TITLE={track['name']}
 TRACKNUMBER={track['track']}
 TRACKTOTAL={metadata['tracktotal']}
+YEAR={year_string}
 DATE={date_string}
 ORIGINALDATE={date_string}
 LOCATION={metadata['venue']}, {metadata['location']}
