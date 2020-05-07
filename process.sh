@@ -20,7 +20,7 @@ done
 
 convert () {
   # Convert SHN to FLAC
-  for f in **/*.shn; do
+  for f in $(find . -name '*.shn'); do
     if [ ! -f ${f/%.shn/.flac} ]; then
       if [ $verbose == 1 ]; then
         echo "converting $f"
@@ -32,7 +32,7 @@ convert () {
 
 tag () {
   # Write VORBIS data to FLAC
-  for f in **/*.flac; do
+  for f in $(find . -name '*.flac'); do
     if [ -f ${f/%.flac/.vorbis} ]; then
       if [ $verbose == 1 ]; then
         echo "writing tags to $f"
@@ -43,7 +43,7 @@ tag () {
 }
 
 clean () {
-  for f in **/*.shn; do
+  for f in $(find . -name '*.shn'); do
     # only delete the shn if there's a vorbis, since that means it was correctly processed
     if [ -f "${f/%.shn/.flac}" ] && [ -f "${f/%.shn/.vorbis}" ] ; then
       if [ $verbose == 1 ]; then
@@ -54,7 +54,7 @@ clean () {
       rm -f "${f/%.shn/.vorbis}" ;
     fi
   done
-  for f in **/*.flac; do
+  for f in $(find . -name '*.flac'); do
     # delete vorbis if they are standalone and there is no corresponding SHN
     if [ -f "${f/%.flac/.vorbis}" ] && [ ! -f "${f/%.flac/.shn}" ]; then
       if [ $verbose == 1 ]; then
@@ -66,7 +66,7 @@ clean () {
 }
 
 force_clean () {
-  for f in **/*.shn; do
+  for f in $(find . -name '*.shn'); do
     if [ -f "${f/%.shn/.flac}" ]; then
       if [ $verbose == 1 ]; then
         echo "delete $f"
@@ -74,7 +74,7 @@ force_clean () {
       rm -f "$f" ;
     fi
   done
-  for f in **/*.flac; do
+  for f in $(find . -name '*.flac'); do
     if [ -f "${f/%.flac/.vorbis}" ]; then
       if [ $verbose == 1 ]; then
         echo "delete ${f/%.flac/.vorbis}"
