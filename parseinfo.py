@@ -14,8 +14,8 @@ LOCATION_RE = re.compile(r'([\w\s\.]+)(,){0,1} (\w\.{0,1}\w\.{0,1})$')
 RED = "\033[31m"
 GREEN = "\033[32m"
 RESET = "\033[0m"
-ANSI_PASS = f"{GREEN}✓{RESET}"
-ANSI_FAIL = f"{RED}✗{RESET}"
+ANSI_PASS = f"{GREEN}\u2713{RESET}"
+ANSI_FAIL = f"{RED}\u2717{RESET}"
 
 def parse(path):
     r = parseDir(path)
