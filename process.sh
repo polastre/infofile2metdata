@@ -3,6 +3,7 @@
 convert=0
 tag=0
 clean=0
+clean_f=0
 verbose=0
 
 while [[ "$#" -gt 0 ]]; do
@@ -10,6 +11,7 @@ while [[ "$#" -gt 0 ]]; do
         -c|--convert) convert=1 ;;
         -t|--tag) tag=1 ;;
         -x|--clean) clean=1 ;;
+        -xf|--cleanforce) clean_f=1 ;;
         -v|--verbose) verbose=1 ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
@@ -42,19 +44,42 @@ tag () {
 
 clean () {
   for f in **/*.shn; do
-    if [ -f ${f/%.shn/.flac} ]; then
+    # only delete the shn if there's a vorbis, since that means it was correctly processed
+    if [ -f "${f/%.shn/.flac}" ] && [ -f "${f/%.shn/.vorbis}" ] ; then
       if [ $verbose == 1 ]; then
         echo "delete $f"
+        echo "delete ${f/%.shn/.vorbis}"
       fi
-      rm -f $f ;
+      rm -f "$f" ;
+      rm -f "${f/%.shn/.vorbis}" ;
     fi
   done
   for f in **/*.flac; do
-    if [ -f ${f/%.flac/.vorbis} ]; then
+    # delete vorbis if they are standalone and there is no corresponding SHN
+    if [ -f "${f/%.flac/.vorbis}" ] && [ ! -f "${f/%.flac/.shn}" ]; then
       if [ $verbose == 1 ]; then
         echo "delete ${f/%.flac/.vorbis}"
       fi
-      rm -f ${f/%.flac/.vorbis} ;
+      rm -f "${f/%.flac/.vorbis}" ;
+    fi
+  done
+}
+
+force_clean () {
+  for f in **/*.shn; do
+    if [ -f "${f/%.shn/.flac}" ]; then
+      if [ $verbose == 1 ]; then
+        echo "delete $f"
+      fi
+      rm -f "$f" ;
+    fi
+  done
+  for f in **/*.flac; do
+    if [ -f "${f/%.flac/.vorbis}" ]; then
+      if [ $verbose == 1 ]; then
+        echo "delete ${f/%.flac/.vorbis}"
+      fi
+      rm -f "${f/%.flac/.vorbis}" ;
     fi
   done
 }
@@ -69,6 +94,9 @@ fi
 
 if [ $clean == 1 ]; then
   clean ;
+fi
+if [ $clean_f == 1 ]; then
+  force_clean ;
 fi
 
 exit 0 ;
