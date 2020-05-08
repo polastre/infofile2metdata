@@ -19,7 +19,6 @@ ANSI_FAIL = f"{RED}\u2717{RESET}"
 
 def parse(path):
     r = parseDir(path)
-    print(r)
     # if an infofile was found, check if it passes checks
     if r.get('infofile') and r.get('info'):
         print(f"* {r['cwd']}")
@@ -96,10 +95,8 @@ def parseInfoFile(filename):
         data = file_object.read()
         try:
             lines = data.decode('utf-8')
-            print(lines)
         except UnicodeDecodeError as e:
             lines = data.decode('cp1252')
-            print(lines)
         except ValueError:
             lines = data.decode('latin-1')
         except:
@@ -142,9 +139,7 @@ def parseInfoFile(filename):
                 if linecount >= 4:
                     state = InfoState.TRACK
             elif state == InfoState.TRACK:
-                print(line)
                 m = TITLE_RE.match(line)
-                print(m)
                 # print(line)
                 # print(m)
                 if m:
