@@ -8,7 +8,7 @@ DEBUG = False
 WRITE_TAGS = False
 
 EXT = ".flac"
-TITLE_RE = re.compile(r'^(d\dt){0,1}(?P<num>\d{1,2})[:\.\,\s]*(?P<name>([\w\s\"\-\(\)\/\[\]<>.,?\'^>#&]|E:)+)(\s*[~!@#$%^&*+=?>]+)*(((\s{2,}[-]{1,2}\s*)|\s+)[[{]{0,1}(?P<time>\d{1,2}[:\.]\d{2}([:\.]\d{2,3})?){0,1}[])]{0,1}){0,1}$')
+TITLE_RE = re.compile(r'^(d\dt){0,1}(?P<num>\d{1,2})[:\.\,\s]*(?P<name>([\w\s\"\-\(\)\/\[\]<>.,?\'’^>#&]|E:)+)(\s*[~!@#$%^&*+=?>]+)*(((\s{2,}[-]{1,2}\s*)|\s+)[[{]{0,1}(?P<time>\d{1,2}[:\.]\d{2}([:\.]\d{2,3})?){0,1}[])]{0,1}){0,1}$')
 LOCATION_RE = re.compile(r'([\w\s\.]+)(,){0,1} (\w\.{0,1}\w\.{0,1})$')
 
 RED = "\033[31m"
@@ -19,8 +19,9 @@ ANSI_FAIL = f"{RED}\u2717{RESET}"
 
 def parse(path):
     r = parseDir(path)
+    print(r)
     # if an infofile was found, check if it passes checks
-    if r['infofile'] and r['info']:
+    if r.get('infofile') and r.get('info'):
         print(f"* {r['cwd']}")
         if DEBUG:
             print(r)
@@ -91,8 +92,19 @@ def parseInfoFile(filename):
         'location': None,
         'tracktotal': 0,
     }
-    with open(filename, 'r') as file_object:
-        for line in file_object.readlines():
+    with open(filename, 'rb') as file_object:
+        data = file_object.read()
+        try:
+            lines = data.decode('utf-8')
+            print(lines)
+        except UnicodeDecodeError as e:
+            lines = data.decode('cp1252')
+            print(lines)
+        except ValueError:
+            lines = data.decode('latin-1')
+        except:
+            return {}
+        for line in lines.split("\n"):
             # linecount += 1
             line = line.strip()
             if not line:
@@ -130,7 +142,9 @@ def parseInfoFile(filename):
                 if linecount >= 4:
                     state = InfoState.TRACK
             elif state == InfoState.TRACK:
+                print(line)
                 m = TITLE_RE.match(line)
+                print(m)
                 # print(line)
                 # print(m)
                 if m:
@@ -150,7 +164,7 @@ def parseInfoFile(filename):
 
 def matchTracksToFiles(info, files):
     """ match track info to the list of flac files """
-    if len(info['tracks']) != len(files):
+    if not info.get('tracks') or len(info['tracks']) != len(files):
         return info
     for i, f in enumerate(files):
         track = info['tracks'][i]
