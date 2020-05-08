@@ -10,7 +10,7 @@ WRITE_TAGS = False
 EXT = ".flac"
 TITLE_RE = re.compile(r'^(d\dt){0,1}(?P<num>\d{1,2})[:\.\,\s]*(?P<name>([\w\s\"\-\(\)\/\[\]<>.,?\'’^>#&]|E:)+)(\s*[~!@#$%^&*+=?>]+)*(((\s{2,}[-]{1,2}\s*)|\s+)[[{]{0,1}(?P<time>\d{1,2}[:\.]\d{2}([:\.]\d{2,3})?){0,1}[])]{0,1}){0,1}$')
 LOCATION_RE = re.compile(r'([\w\s\.]+)(,){0,1} (\w\.{0,1}\w\.{0,1})$')
-DISC_RE = re.compile(r'^(\d{0,2}\s+((dis[ck])|(cd)))|(((dis[ck])|(cd))\s+\d{0,2})')
+DISC_RE = re.compile(r'^(\d{0,2}\s+((dis[ck])|(cd)))|(((dis[ck])|(cd))\s+\d{0,2})', re.I)
 
 RED = "\033[31m"
 GREEN = "\033[32m"
@@ -141,12 +141,12 @@ def parseInfoFile(filename):
                     state = InfoState.TRACK
             elif state == InfoState.TRACK:
                 # Skip disc intros, eg "1 Disc" or "CD 1"
-                m = DISC_RE.match(line, re.IGNORECASE)
+                # print(line)
+                m = DISC_RE.search(line)
                 if m:
                     continue
                 # Extract track information via regex
                 m = TITLE_RE.match(line)
-                # print(line)
                 # print(m)
                 if m:
                     track = {
