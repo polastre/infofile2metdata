@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+IFS=$'\n'
 
 convert=0
 tag=0
