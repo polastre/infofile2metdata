@@ -30,11 +30,11 @@ convert () {
     fi
   done
   for f in $(find . -name '*.m4a'); do
-    if [ ! -f ${f/%.shn/.flac} ]; then
+    if [ ! -f ${f/%.m4a/.flac} ]; then
       if [ $verbose == 1 ]; then
         echo "converting $f"
       fi
-      ffmpeg -i "$f" "${f/%.shn/.flac}" ;
+      ffmpeg -i "$f" "${f/%.m4a/.flac}" ;
     fi
   done
 }
@@ -80,6 +80,14 @@ clean () {
 force_clean () {
   for f in $(find . -name '*.shn'); do
     if [ -f "${f/%.shn/.flac}" ]; then
+      if [ $verbose == 1 ]; then
+        echo "delete $f"
+      fi
+      rm -f "$f" ;
+    fi
+  done
+  for f in $(find . -name '*.m4a'); do
+    if [ -f "${f/%.m4a/.flac}" ]; then
       if [ $verbose == 1 ]; then
         echo "delete $f"
       fi
