@@ -29,6 +29,14 @@ convert () {
       ffmpeg -i "$f" "${f/%.shn/.flac}" ;
     fi
   done
+  for f in $(find . -name '*.m4a'); do
+    if [ ! -f ${f/%.shn/.flac} ]; then
+      if [ $verbose == 1 ]; then
+        echo "converting $f"
+      fi
+      ffmpeg -i "$f" "${f/%.shn/.flac}" ;
+    fi
+  done
 }
 
 tag () {
@@ -44,20 +52,23 @@ tag () {
 }
 
 clean () {
-  for f in $(find . -name '*.shn'); do
-    # only delete the shn if there's a vorbis, since that means it was correctly processed
-    if [ -f "${f/%.shn/.flac}" ] && [ -f "${f/%.shn/.vorbis}" ] ; then
-      if [ $verbose == 1 ]; then
-        echo "delete $f"
-        echo "delete ${f/%.shn/.vorbis}"
-      fi
-      rm -f "$f" ;
-      rm -f "${f/%.shn/.vorbis}" ;
-    fi
-  done
   for f in $(find . -name '*.flac'); do
-    # delete vorbis if they are standalone and there is no corresponding SHN
-    if [ -f "${f/%.flac/.vorbis}" ] && [ ! -f "${f/%.flac/.shn}" ]; then
+    # delete m4a if there's a vorbis, since it is correctly processed
+    if [ -f "${f/%.flac/.vorbis}" ] && [ -f "${f/%.flac/.m4a}" ]; then
+      if [ $verbose == 1 ]; then
+        echo "delete ${f/%.flac/.m4a}"
+      fi
+      rm -f "${f/%.flac/.m4a}" ;
+    fi
+    # delete shn if there's a vorbis, since it is correctly processed
+    if [ -f "${f/%.flac/.vorbis}" ] && [ -f "${f/%.flac/.shn}" ]; then
+      if [ $verbose == 1 ]; then
+        echo "delete ${f/%.flac/.shn}"
+      fi
+      rm -f "${f/%.flac/.shn}" ;
+    fi
+    # delete vorbis if they are standalone and there is no corresponding SHN/M4A
+    if [ -f "${f/%.flac/.vorbis}" ] && [ ! -f "${f/%.flac/.shn}" ] && [ ! -f "${f/%.flac/.m4a}" ]; then
       if [ $verbose == 1 ]; then
         echo "delete ${f/%.flac/.vorbis}"
       fi
